@@ -1,0 +1,6 @@
+{
+  "name": "AIRT-Net Autoimmune Platform",
+  "description": "AI system for reference-free early detection and minimal-intervention prevention of pre-clinical autoimmune disease.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
