@@ -10,7 +10,7 @@ import {
   Legend,
   CartesianGrid,
 } from 'recharts';
-import { Sliders, Clock, Sparkles, Pill, AlertCircle, ArrowRight } from 'lucide-react';
+import { Sliders, Clock, Sparkles, Pill, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface InterventionSimulatorProps {
   patients: Patient[];
@@ -62,23 +62,23 @@ export const InterventionSimulator: React.FC<InterventionSimulatorProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
             <div className="flex items-center space-x-2">
-              <Sliders className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <Sliders className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-xl font-bold text-slate-100">
                 Minimal-Intervention Trajectory Simulator
               </h2>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Model disease-delay impacts before Stage 3 clinical onset. Grounded in FDA-approved Teplizumab (Tzield) Stage 2 T1D trial precedents.
+            <p className="text-xs text-slate-400 mt-1">
+              Simulate disease-delay windows before Stage 3 clinical conversion across 15 autoimmune disease profiles.
             </p>
           </div>
 
           {/* Patient Selector */}
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium text-slate-500">Subject:</span>
+            <span className="text-xs font-medium text-slate-400">Subject:</span>
             <select
               value={patient.id}
               onChange={(e) => {
@@ -88,7 +88,7 @@ export const InterventionSimulator: React.FC<InterventionSimulatorProps> = ({
                   onSelectPatient(found);
                 }
               }}
-              className="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 font-bold text-slate-900 dark:text-slate-100 focus:outline-none"
+              className="text-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-bold text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
             >
               {patients.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -100,24 +100,25 @@ export const InterventionSimulator: React.FC<InterventionSimulatorProps> = ({
         </div>
 
         {/* Simulator Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-              1. Select Intervention
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+              1. Select Targeted Intervention
             </label>
             <select
               value={interventionType}
               onChange={(e) => setInterventionType(e.target.value)}
-              className="w-full text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-3 font-medium text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
             >
               <option value="teplizumab_tzield">Teplizumab (Tzield) Anti-CD3 Monoclonal Infusion</option>
-              <option value="low_dose_dmard">Low-Dose Targeted DMARD Regimen</option>
+              <option value="low_dose_dmard">Low-Dose Targeted DMARD / Biologic (Abatacept / Anti-IL17)</option>
+              <option value="fcrn_blocker">Efgartigimod (Vyvgart) FcRn IgG Depletion</option>
               <option value="lifestyle_microbiome">Tolerogenic Prebiotic & SCFA Dietary Protocol</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
               2. Dosage / Regimen Intensity
             </label>
             <div className="flex space-x-2 pt-1">
@@ -125,111 +126,118 @@ export const InterventionSimulator: React.FC<InterventionSimulatorProps> = ({
                 <button
                   key={intensity}
                   onClick={() => setDosageIntensity(intensity)}
-                  className={`flex-1 py-2 text-xs rounded-lg font-bold border transition-all ${
+                  className={`flex-1 py-2.5 text-xs rounded-xl font-bold border transition-all ${
                     dosageIntensity === intensity
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-200'
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-md'
+                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:bg-slate-800'
                   }`}
                 >
-                  {intensity === 'standard' ? 'Standard Protocol' : 'High Intensity Protocol'}
+                  {intensity === 'standard' ? 'Standard Protocol' : 'High-Intensity Protocol'}
                 </button>
               ))}
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-              3. Execution Status
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+              3. Baseline Subject State
             </label>
-            <button
-              onClick={runSimulation}
-              disabled={isLoading}
-              className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs rounded-lg shadow-md transition-all flex items-center justify-center space-x-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>{isLoading ? 'Computing Trajectory...' : 'Re-Run Trajectory Model'}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Simulation Results Display */}
-      {simulationResult && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Trajectory Projection Chart */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                  Projected 24-Month Trajectory Comparison
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Baseline (No Intervention) vs Post-{simulationResult.interventionApplied}
-                </p>
+                <span className="font-semibold text-slate-100">{patient.name}</span>
+                <span className="block text-[11px] text-slate-400">{patient.diseaseType}</span>
               </div>
-
-              <div className="flex items-center space-x-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                <Clock className="w-4 h-4" />
-                <span>+ {simulationResult.estimatedStage3DelayMonths} Months Delayed Stage 3 Onset</span>
-              </div>
-            </div>
-
-            <div className="h-72 w-full pt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={simulationResult.projectedTrajectory}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                  <XAxis dataKey="visitDate" tick={{ fontSize: 12 }} />
-                  <YAxis domain={[0, 1]} tick={{ fontSize: 12 }} label={{ value: 'Risk Score (0 to 1)', angle: -90, position: 'insideLeft', fontSize: 10 }} />
-                  <Tooltip />
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Line type="monotone" dataKey="baselineRisk" name="Baseline Natural Progression" stroke="#f43f5e" strokeWidth={3} dot={{ r: 5 }} />
-                  <Line type="monotone" dataKey="projectedRiskWithIntervention" name="Projected Post-Intervention" stroke="#10b981" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 5 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Outcome Summary Card */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm border-b border-slate-200 dark:border-slate-800 pb-3">
-                <Pill className="w-4 h-4" />
-                <span>Simulation Outcome Summary</span>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between items-center p-2.5 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                  <span className="text-slate-500">Baseline Risk Score:</span>
-                  <span className="font-bold text-rose-600 font-mono text-sm">
-                    {(simulationResult.baselineRiskScore * 100).toFixed(0)}%
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center p-2.5 bg-emerald-50 dark:bg-emerald-950/60 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                  <span className="text-emerald-800 dark:text-emerald-300 font-medium">Projected 24m Risk:</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono text-base">
-                    {(simulationResult.projectedRiskScore24Months * 100).toFixed(0)}%
-                  </span>
-                </div>
-
-                <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg border border-indigo-200 dark:border-indigo-800 space-y-1">
-                  <span className="font-bold text-indigo-900 dark:text-indigo-200 block">Clinical Rationale:</span>
-                  <p className="text-slate-700 dark:text-slate-300 text-[11px]">
-                    {simulationResult.clinicalRationale}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-lg border border-amber-200 dark:border-amber-800 text-[11px] text-amber-900 dark:text-amber-200 flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <span>
-                Trialnet & FDA Tzield precedent: Preserving functional beta-cell AUC or target tissue architecture at Stage 2 yields multi-year symptom-free survival.
+              <span className="font-mono font-bold text-rose-400 text-sm">
+                {(patient.currentRiskScore * 100).toFixed(0)}% Baseline
               </span>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Simulation Output Cards */}
+        {simulationResult && (
+          <div className="space-y-6 pt-4 border-t border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                <span className="text-xs text-slate-400 font-medium">Projected 24-Month Risk</span>
+                <div className="flex items-baseline space-x-2">
+                  <span className="text-2xl font-black font-mono text-emerald-400">
+                    {(simulationResult.projectedRiskScore24Months * 100).toFixed(0)}%
+                  </span>
+                  <span className="text-xs text-slate-500 line-through">
+                    {(simulationResult.baselineRiskScore * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <span className="text-[11px] text-emerald-500 font-semibold">
+                  -
+                  {Math.round(
+                    (simulationResult.baselineRiskScore - simulationResult.projectedRiskScore24Months) * 100
+                  )}
+                  % Absolute Risk Reduction
+                </span>
+              </div>
+
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                <span className="text-xs text-slate-400 font-medium">Estimated Clinical Stage 3 Delay</span>
+                <div className="text-2xl font-black font-mono text-indigo-400 flex items-center space-x-1.5">
+                  <Clock className="w-5 h-5 text-indigo-400" />
+                  <span>+{simulationResult.estimatedStage3DelayMonths} Months</span>
+                </div>
+                <span className="text-[11px] text-indigo-300 font-medium">
+                  ~{(simulationResult.estimatedStage3DelayMonths / 12).toFixed(1)} Years Sparing Active Symptoms
+                </span>
+              </div>
+
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                <span className="text-xs text-slate-400 font-medium">Intervention Applied</span>
+                <div className="text-sm font-bold text-slate-100 truncate mt-1">
+                  {simulationResult.interventionApplied}
+                </div>
+                <span className="text-[11px] text-slate-400">Grounded in clinical trial endpoints</span>
+              </div>
+            </div>
+
+            {/* Projected Trajectory Chart */}
+            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-100">
+                  Projected Trajectory Curve: Natural Progression vs Minimal Intervention
+                </h3>
+                <div className="flex items-center space-x-4 text-xs font-medium">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-1 bg-rose-500 rounded" />
+                    <span className="text-slate-400">Natural Trajectory</span>
+                  </div>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-1 bg-emerald-400 rounded" />
+                    <span className="text-slate-200">With Minimal Intervention</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={simulationResult.projectedTrajectory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
+                    <XAxis dataKey="visitDate" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                    <YAxis stroke="#94a3b8" domain={[0, 1.0]} tick={{ fontSize: 11 }} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.75rem', fontSize: '12px' }}
+                      formatter={(v: any) => [`${Math.round(Number(v) * 100)}%`]}
+                    />
+                    <Line type="monotone" dataKey="baselineRisk" name="Natural Progression Risk" stroke="#f43f5e" strokeWidth={2.5} strokeDasharray="4 4" dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="projectedRiskWithIntervention" name="With Targeted Minimal Intervention" stroke="#10b981" strokeWidth={3} dot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-300">
+                <span className="font-semibold text-slate-100">Clinical Rationale:</span> {simulationResult.clinicalRationale}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
